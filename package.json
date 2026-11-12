@@ -1,0 +1,12 @@
+{
+  "name": "crewcut-nle-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CrewCut Adobe CEP extension for Premiere Pro and After Effects",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "tus-js-client": "^4.3.1"
+  }
+}
