@@ -4,7 +4,7 @@
  * If a newer version is published, it updates the local files in CEP AppData.
  */
 (function (root) {
-  var LOCAL_VERSION = '1.0.0';
+  var LOCAL_VERSION = '1.0.1';
   var REMOTE_BASE = 'https://crewcutindia.github.io/crewcut-plugin/client';
   var CHECK_TIMEOUT_MS = 2500;
 

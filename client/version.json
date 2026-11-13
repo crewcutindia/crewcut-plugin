@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "CrewCut NLE Extension",
-  "publishedAt": "2026-11-13T00:52:00Z",
-  "changelog": "Initial cloud-connected release with React Bits spotlight cards, shiny text, and instant playback."
+  "publishedAt": "2026-11-13T17:22:00Z",
+  "changelog": "Added interactive voice note playback in feedback cards and timeline marker sync."
 }

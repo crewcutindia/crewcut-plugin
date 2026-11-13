@@ -1008,6 +1008,74 @@ select {
   overflow-wrap: anywhere;
 }
 
+/* Voice Note Mini Player */
+.voice-note-player {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-control);
+  margin-top: 2px;
+}
+
+.voice-play-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: var(--action);
+  color: var(--action-text);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 80ms ease, background-color 140ms ease;
+}
+
+.voice-play-btn:hover {
+  background: var(--action-hover);
+}
+
+.voice-play-btn:active {
+  transform: scale(0.92);
+}
+
+.voice-play-btn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.voice-track {
+  flex: 1;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--surface-raised);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.voice-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: var(--action);
+  border-radius: 9999px;
+  transition: width 80ms linear;
+}
+
+.voice-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .comment-foot {
   display: flex;
   align-items: center;

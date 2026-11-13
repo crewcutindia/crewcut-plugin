@@ -99,6 +99,8 @@
   var syncedCommentIds = new Set();
   var lastUploadResult = null;
   var activeTransfer = null;
+  var currentActiveAudio = null;
+  var currentActiveAudioBtn = null;
 
   function makeClient() {
     return Api.createApiClient({
@@ -265,6 +267,12 @@
   }
 
   function renderComments(comments) {
+    if (currentActiveAudio) {
+      currentActiveAudio.pause();
+      currentActiveAudio = null;
+      currentActiveAudioBtn = null;
+    }
+
     currentComments = Array.isArray(comments) ? comments : [];
     el.commentsCount.textContent = currentComments.length + (currentComments.length === 1 ? ' comment' : ' comments');
     el.commentsList.innerHTML = '';
@@ -311,15 +319,96 @@
 
       head.append(author, tcBtn);
 
-      var body = document.createElement('p');
-      body.className = 'comment-body';
-      body.textContent = comment.text || '';
+      var body = null;
+      if (comment.text && comment.text.trim()) {
+        body = document.createElement('p');
+        body.className = 'comment-body';
+        body.textContent = comment.text;
+      }
+
+      var voiceCard = null;
+      if (comment.voiceNoteUrl) {
+        voiceCard = document.createElement('div');
+        voiceCard.className = 'voice-note-player';
+
+        var playBtn = document.createElement('button');
+        playBtn.type = 'button';
+        playBtn.className = 'voice-play-btn';
+        playBtn.setAttribute('aria-label', 'Play voice note');
+        playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+
+        var track = document.createElement('div');
+        track.className = 'voice-track';
+        var fill = document.createElement('div');
+        fill.className = 'voice-fill';
+        track.appendChild(fill);
+
+        var timeLabel = document.createElement('span');
+        timeLabel.className = 'mono tabular-nums voice-time';
+        timeLabel.textContent = 'Voice note';
+
+        var audio = new Audio(comment.voiceNoteUrl);
+
+        audio.addEventListener('loadedmetadata', function () {
+          if (audio.duration && !isNaN(audio.duration)) {
+            timeLabel.textContent = Format.formatTimecode(audio.duration);
+          }
+        });
+
+        audio.addEventListener('timeupdate', function () {
+          if (audio.duration && !isNaN(audio.duration)) {
+            var pct = (audio.currentTime / audio.duration) * 100;
+            fill.style.width = pct + '%';
+            timeLabel.textContent = Format.formatTimecode(audio.currentTime) + ' / ' + Format.formatTimecode(audio.duration);
+          }
+        });
+
+        audio.addEventListener('ended', function () {
+          playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+          fill.style.width = '0%';
+          if (audio.duration && !isNaN(audio.duration)) {
+            timeLabel.textContent = Format.formatTimecode(audio.duration);
+          }
+          if (currentActiveAudio === audio) {
+            currentActiveAudio = null;
+            currentActiveAudioBtn = null;
+          }
+        });
+
+        playBtn.addEventListener('click', function () {
+          if (currentActiveAudio && currentActiveAudio !== audio) {
+            currentActiveAudio.pause();
+            currentActiveAudio.currentTime = 0;
+            if (currentActiveAudioBtn) {
+              currentActiveAudioBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            }
+          }
+
+          if (audio.paused) {
+            audio.play().then(function () {
+              playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+              currentActiveAudio = audio;
+              currentActiveAudioBtn = playBtn;
+            }).catch(function (e) {
+              setFeedbackError('Audio playback failed: ' + (e && e.message));
+            });
+          } else {
+            audio.pause();
+            playBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            currentActiveAudio = null;
+            currentActiveAudioBtn = null;
+          }
+        });
+
+        voiceCard.append(playBtn, track, timeLabel);
+      }
 
       var foot = document.createElement('div');
       foot.className = 'comment-foot';
 
       var leftTag = document.createElement('span');
       var tags = [];
+      if (comment.voiceNoteUrl) tags.push('🎙️ Voice note');
       if (comment.isReply) tags.push('Reply');
       if (syncedCommentIds.has(comment.id)) tags.push('Synced');
       leftTag.textContent = tags.join(' · ');
@@ -329,7 +418,10 @@
       ago.textContent = Format.timeAgo(comment.createdAt);
 
       foot.append(leftTag, ago);
-      card.append(head, body, foot);
+      card.appendChild(head);
+      if (body) card.appendChild(body);
+      if (voiceCard) card.appendChild(voiceCard);
+      card.appendChild(foot);
       el.commentsList.appendChild(card);
     });
   }

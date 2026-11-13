@@ -405,9 +405,14 @@ function __ccAeftSyncMarkers(comments, targetId) {
         t = durS;
       }
 
-      mv = new MarkerValue(String(item.text || item.body || "") + "\n[cc:" + id + "]");
+      var bodyText = String(item.text || item.body || "");
+      if (item.voiceNoteUrl) {
+        bodyText = (bodyText ? bodyText + "\n" : "") + "[Voice Note in Review]";
+      }
+
+      mv = new MarkerValue(bodyText + "\n[cc:" + id + "]");
       try {
-        mv.chapter = String(item.author || item.authorName || "Client");
+        mv.chapter = String(item.author || item.authorName || "Client") + (item.voiceNoteUrl ? " [Voice]" : "");
       } catch (eChap) {}
       mp.setValueAtTime(t, mv);
       existing[id] = true;

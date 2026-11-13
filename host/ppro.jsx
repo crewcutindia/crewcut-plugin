@@ -552,9 +552,14 @@ function __ccPproSyncMarkers(comments, targetId) {
       t = timing.durationSeconds;
     }
 
+    var bodyText = String(item.text || item.body || "");
+    if (item.voiceNoteUrl) {
+      bodyText = (bodyText ? bodyText + "\n" : "") + "[Voice Note in Review]";
+    }
+
     mk = markers.createMarker(timing.zeroSeconds + t);
-    mk.name = "CrewCut: " + String(item.author || item.authorName || "Client");
-    mk.comments = String(item.text || item.body || "") + "\n[cc:" + id + "]";
+    mk.name = "CrewCut: " + String(item.author || item.authorName || "Client") + (item.voiceNoteUrl ? " [Voice]" : "");
+    mk.comments = bodyText + "\n[cc:" + id + "]";
     existing[id] = true;
     added++;
   }

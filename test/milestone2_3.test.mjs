@@ -587,3 +587,19 @@ test('Responsive UI removes Local File dropzone and enables side-by-side desktop
   assert.match(css, /max-width: 1120px/);
   assert.match(manifest, /<Width>2560<\/Width>/);
 });
+
+test('Voice notes are supported in UI audio player and ExtendScript marker sync', () => {
+  const pproCode = fs.readFileSync(path.join(repoRoot, 'host', 'ppro.jsx'), 'utf8');
+  const aeftCode = fs.readFileSync(path.join(repoRoot, 'host', 'aeft.jsx'), 'utf8');
+  const css = fs.readFileSync(path.join(repoRoot, 'client', 'styles.css'), 'utf8');
+  const appJs = fs.readFileSync(path.join(repoRoot, 'client', 'app.js'), 'utf8');
+
+  assert.match(pproCode, /voiceNoteUrl/);
+  assert.match(pproCode, /Voice Note in Review/);
+  assert.match(aeftCode, /voiceNoteUrl/);
+  assert.match(aeftCode, /Voice Note in Review/);
+  assert.match(css, /\.voice-note-player/);
+  assert.match(css, /\.voice-play-btn/);
+  assert.match(appJs, /voiceNoteUrl/);
+  assert.match(appJs, /new Audio\(comment\.voiceNoteUrl\)/);
+});
