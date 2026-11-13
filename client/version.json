@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "CrewCut NLE Extension",
-  "publishedAt": "2026-11-13T17:22:00Z",
-  "changelog": "Added interactive voice note playback in feedback cards and timeline marker sync."
+  "publishedAt": "2026-11-13T17:39:00Z",
+  "changelog": "Added interactive voice note audio player with scrub bar and timeline marker sync."
 }

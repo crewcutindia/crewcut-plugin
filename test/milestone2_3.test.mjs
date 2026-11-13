@@ -600,6 +600,6 @@ test('Voice notes are supported in UI audio player and ExtendScript marker sync'
   assert.match(aeftCode, /Voice Note in Review/);
   assert.match(css, /\.voice-note-player/);
   assert.match(css, /\.voice-play-btn/);
-  assert.match(appJs, /voiceNoteUrl/);
-  assert.match(appJs, /new Audio\(comment\.voiceNoteUrl\)/);
+  assert.match(appJs, /voiceUrl/);
+  assert.match(appJs, /new Audio\(voiceUrl\)/);
 });

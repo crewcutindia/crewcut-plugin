@@ -326,8 +326,9 @@
         body.textContent = comment.text;
       }
 
+      var voiceUrl = comment.voiceNoteUrl || comment.voice_note_url;
       var voiceCard = null;
-      if (comment.voiceNoteUrl) {
+      if (voiceUrl) {
         voiceCard = document.createElement('div');
         voiceCard.className = 'voice-note-player';
 
@@ -347,7 +348,15 @@
         timeLabel.className = 'mono tabular-nums voice-time';
         timeLabel.textContent = 'Voice note';
 
-        var audio = new Audio(comment.voiceNoteUrl);
+        var audio = new Audio(voiceUrl);
+
+        track.addEventListener('click', function (e) {
+          if (!audio.duration || isNaN(audio.duration)) return;
+          var rect = track.getBoundingClientRect();
+          var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          audio.currentTime = pct * audio.duration;
+          fill.style.width = (pct * 100) + '%';
+        });
 
         audio.addEventListener('loadedmetadata', function () {
           if (audio.duration && !isNaN(audio.duration)) {
@@ -408,7 +417,7 @@
 
       var leftTag = document.createElement('span');
       var tags = [];
-      if (comment.voiceNoteUrl) tags.push('🎙️ Voice note');
+      if (voiceUrl) tags.push('🎙️ Voice note');
       if (comment.isReply) tags.push('Reply');
       if (syncedCommentIds.has(comment.id)) tags.push('Synced');
       leftTag.textContent = tags.join(' · ');

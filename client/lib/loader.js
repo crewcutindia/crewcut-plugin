@@ -4,7 +4,7 @@
  * If a newer version is published, it updates the local files in CEP AppData.
  */
 (function (root) {
-  var LOCAL_VERSION = '1.0.1';
+  var LOCAL_VERSION = '1.0.2';
   var REMOTE_BASE = 'https://crewcutindia.github.io/crewcut-plugin/client';
   var CHECK_TIMEOUT_MS = 2500;
 
@@ -74,11 +74,15 @@
   function showUpdateToast(newVersion) {
     var toast = document.createElement('div');
     toast.className = 'update-toast shiny-text';
-    toast.textContent = '✨ CrewCut updated to v' + newVersion;
+    toast.style.cursor = 'pointer';
+    toast.innerHTML = '✨ CrewCut updated to v' + newVersion + ' · <span style="text-decoration:underline;">Click to reload</span>';
+    toast.addEventListener('click', function () {
+      window.location.reload();
+    });
     document.body.appendChild(toast);
     setTimeout(function () {
       if (toast.parentNode) toast.parentNode.removeChild(toast);
-    }, 4500);
+    }, 6000);
   }
 
   async function checkAndApplyUpdates() {
